@@ -30,7 +30,7 @@ export default {
 
     const fetchContacts = () => {
       axios
-        .get("http://demo.sibers.com/users")
+        .get("https://demo.sibers.com/users")
         .then(resp => (state.contacts = resp.data));
     };
 
