@@ -6,5 +6,8 @@ module.exports = {
         prependData: `@import "~@/scss/mixins.scss";`
       }
     }
-  }
+  },
+  publicPath: process.env.NODE_ENV === 'production'
+    ? '/sibers-test/'
+    : '/'
 };
