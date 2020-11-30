@@ -1,0 +1,17 @@
+@font-face {
+  font-family: 'pt_sans';
+  src: url('/assets/fonts/ptsans_regular_macroman/PTS55F-webfont.ttf') format('truetype');
+  src: url('/assets/fonts/ptsans_regular_macroman/PTS55F-webfont.woff') format('woff'),
+  url('/assets/fonts/ptsans_regular_macroman/PTS55F-webfont.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'pt_sans';
+  src: url('/assets/fonts/ptsans_bold_macroman/PTS75F-webfont.ttf');
+  src: url('/assets/fonts/ptsans_bold_macroman/PTS75F-webfont.woff') format('woff'),
+  url('/assets/fonts/ptsans_bold_macroman/PTS75F-webfont.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}

@@ -2,7 +2,11 @@
   <div :class="className" class="contact">
     <div class="contact__layout">
       <div class="contact__avatar-wrapper">
-        <img class="contact__avatar" src="https://advanced-television.com/wp-content/uploads/2020/10/Borat.jpg" alt="borat"/>
+        <img
+          class="contact__avatar"
+          src="https://advanced-television.com/wp-content/uploads/2020/10/Borat.jpg"
+          alt="borat"
+        />
       </div>
       <div class="contact__info-wrapper">
         <div class="contact__info-main">
@@ -15,7 +19,7 @@
 </template>
 
 <script>
-import {computed} from "vue"
+import { computed } from "vue";
 export default {
   name: "contact",
   props: {
@@ -26,39 +30,38 @@ export default {
     },
     contact: {
       type: Object,
-      default: () => {
-      },
+      default: () => {},
       required: true
     }
   },
-  setup(props) {
-
-  }
+  setup(props) {}
 };
 </script>
 
 <style scoped lang="scss">
 .contact {
+  height: 80px;
   border-radius: 32px;
-  box-shadow: 0 0 4px 0 var(--main-text);
-  overflow: hidden;
-  margin-bottom: 16px;
-  transition: var(--tr-dur) var(--tr-func);
-  cursor: pointer;
-
-  @media (hover) {
-    &:hover {
-      box-shadow: 0 0 8px 0 var(--main-text);
-    }
-  }
-
   &__layout {
     display: flex;
+    overflow: hidden;
     flex-direction: row;
+    border-radius: 32px;
+    box-shadow: 0 0 4px 0 var(--main-text);
+    cursor: pointer;
+    height: 64px;
+    @include transition(box-shadow);
+
+    @media (hover) {
+      &:hover {
+        box-shadow: 0 0 8px 0 var(--main-text);
+      }
+    }
   }
 
   &__avatar-wrapper {
     width: 20%;
+    background-color: #292a2d;
   }
 
   &__avatar {
@@ -72,6 +75,8 @@ export default {
   &__info-wrapper {
     width: 80%;
     padding: 8px;
+    background-color: #292a2d;
+    overflow: hidden;
   }
 
   &__info-main {

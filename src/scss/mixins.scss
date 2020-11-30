@@ -1,0 +1,12 @@
+@mixin transition($properties: all, $duration: var(--tr-dur), $method: var(--tr-dunc)) {
+  $value: ();
+  @each $property in $properties {
+    @if length($value) > 0 {
+      $value: append($value, unquote(",") #{$property} $duration $method);
+    }
+    @else {
+      $value: append($value, #{$property} $duration $method);
+    }
+  }
+  transition: $value;
+}

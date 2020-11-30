@@ -2,23 +2,43 @@
   <div>
     <div :class="className" class="contacts-block">
       <div class="contacts-block__filters-wrapper">
-        <input class="contacts-block__input" v-on:keyup="() => filterByName()" v-model="state.inputName" type="text" name="filter"/>
+        <CustomInput
+          alt="Filter by username"
+          placeholder="Filter by username"
+          v-model="state.inputName"
+          :keyup="() => filterByName()"
+          :value="state.inputName"
+          class-name="contacts-block__filter-input"
+        />
       </div>
-      <transition-group name="contacts-block__contact-" duration="1000" tag="div">
-        <Contact v-bind:key="contact.id" v-for="contact in state.contacts" class-name="contacts-block__contact" :contact="contact" />
+      <transition-group
+        tag="div"
+        :css="false"
+        v-on:before-enter="beforeEnter"
+        v-on:enter="onEnter"
+        v-on:leave="onLeave"
+      >
+        <Contact
+          :data-index="contact.id"
+          :key="contact.id"
+          v-for="contact in state.contacts"
+          class-name="contacts-block__contact"
+          :contact="contact"
+        />
       </transition-group>
-
     </div>
   </div>
 </template>
 
 <script>
 import { onMounted, ref, computed, reactive, watch } from "vue";
+import "velocity-animate/velocity.ui.min.js"; //using velocityJS animations to get stable tick by frame. Library uses requestAnimationFrame() native js method
 import Contact from "@/components/contacts-components/contact";
+import CustomInput from "@/components/input-components/custom-input";
 
 export default {
-  name: "Contacts",
-  components: { Contact },
+  name: "ContactsBlock",
+  components: { CustomInput, Contact },
   props: {
     className: {
       type: String,
@@ -34,30 +54,51 @@ export default {
   setup(props, context) {
     const state = reactive({
       contacts: props.contacts,
-      inputName: null
-    })
+      inputName: ""
+    });
 
-    watch(() => props.contacts, () => {
-      filterByName()
-      console.log(state.contacts, 'props.contacts WATCH')
-    })
+    watch(
+      () => props.contacts,
+      () => {
+        //using vueJS hook "watch" to be sure we'll get the props.
+        filterByName(); //No need to block page till we get data-array
+        console.log(state.contacts, "props.contacts WATCH");
+      }
+    );
 
     const filterByName = () => {
+      console.log(state, "state");
       state.contacts = props.contacts.filter(contact => {
-           return state.inputName ? contact.username.toLowerCase().includes(state.inputName) : props.contacts
-        })
-    }
+        return (
+          contact.username
+            .toLowerCase()
+            .indexOf(state.inputName.toLowerCase()) !== -1
+        );
+      });
+    };
 
-    return {state, filterByName}
+    const beforeEnter = el => {
+      el.style.height = "0";
+    };
+    const onEnter = (el, done) => {
+      Velocity(el, { height: "80px" }, { complete: done });
+    };
+    const onLeave = (el, done) => {
+      Velocity(el, { height: 0 }, { complete: done });
+    };
+
+    return { state, filterByName, beforeEnter, onEnter, onLeave };
   }
 };
 </script>
 
 <style scoped lang="scss">
+$filters-height: 48px;
+
 .contacts-block {
   padding: 16px;
-  margin-top: 48px;
-  height: 100vh;
+  margin-top: $filters-height;
+  height: calc(100vh - #{$filters-height});
   overflow: scroll;
   position: relative;
 
@@ -66,21 +107,14 @@ export default {
     top: 0;
     left: 0;
     width: 30%;
-    height: 48px;
+    height: $filters-height;
     background-color: #373737;
+    display: flex;
+    align-items: center;
   }
 
-  &__contact {
-    transform: scale(1);
-    &--item {
-
-    }
-    &--enter-active, &--leave-active {
-      transition: all 1s;
-    }
-    &--enter, &--leave-to {
-      transform: scale(0);
-    }
+  &__filter-input {
+    margin: 0 0 0 16px;
   }
 }
 </style>
