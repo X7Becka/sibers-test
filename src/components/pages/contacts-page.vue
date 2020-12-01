@@ -1,46 +1,31 @@
 <template>
   <div class="contacts-page">
-    <ContactsBlock
-      class-name="contacts-page__contacts-block"
-      :contacts="state.contacts"
-    />
+    <ContactsList :="{...mapStateToProps}" />
+    <ContactEditor/>
   </div>
 </template>
 
 <script>
-import ContactsBlock from "@/components/contacts-components/contacts-block";
-import { onMounted, reactive, ref } from "vue";
-import axios from "axios";
+import ContactsList from "@/components/contacts-components/contacts-list";
+import ContactEditor from "@/components/contacts-components/contact-editor";
 
 export default {
   name: "ContactsPage",
-  components: { ContactsBlock },
+  components: { ContactEditor, ContactsList },
   setup() {
-    const state = reactive({
-      contacts: null
-    });
-    const num = ref(0);
-    onMounted(() => {
-      fetchContacts();
-    });
+    const mapStateToProps = {
+      className: "contacts-page__contacts-block",
+    }
 
-    const incNum = () => {
-      num.value++;
-    };
-
-    const fetchContacts = () => {
-      axios
-        .get("https://demo.sibers.com/users")
-        .then(resp => (state.contacts = resp.data));
-    };
-
-    return { state, num, incNum };
+    return { mapStateToProps };
   }
 };
 </script>
 
 <style scoped lang="scss">
 .contacts-page {
-  width: 30%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
 }
 </style>

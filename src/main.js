@@ -7,7 +7,6 @@ import store from "./store";
 createApp({
   render: () => h(App)
 })
-  .use(createLogger({}))
   .use(store)
   .use(router)
   .mount("#app");
