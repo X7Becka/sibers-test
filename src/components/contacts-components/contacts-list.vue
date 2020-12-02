@@ -17,14 +17,15 @@
         v-on:before-enter="transition.beforeEnter"
         v-on:enter="transition.onEnter"
         v-on:leave="transition.onLeave"
+        class="contacts-list__contacts-wrapper"
     >
       <Contact
           :data-index="contact?.id"
           :key="contact?.id"
-          v-for="(contact, index) in state.filteredContacts"
+          v-for="contact in state.filteredContacts"
           class-name="contacts-list__contact"
           :contact="contact"
-          @click="editContact(index)"
+          @click="editContact(contact?.id)"
       />
     </transition-group>
   </div>
@@ -32,7 +33,7 @@
 
 <script>
 import { onMounted, reactive } from "vue";
-import "velocity-animate/velocity.ui.min.js"; //using velocityJS animations to get stable tick by frame. Library uses requestAnimationFrame() native js method
+import "velocity-animate/velocity.ui.min.js";                       //using velocityJS animations to get stable tick by frame. Library uses requestAnimationFrame() native js method
 import Contact from "@/components/contacts-components/contact";
 import CustomInput from "@/components/input-components/custom-input";
 import { useStore } from "vuex";
@@ -64,7 +65,7 @@ export default {
     };
 
     const _getContacts = () => {
-      store.dispatch("CONTACTS/LOAD_CONTACTS", "http://demo.sibers.com/users")
+      store.dispatch("CONTACTS/LOAD_CONTACTS")
           .then(() => state.contacts = store.getters["CONTACTS/GET_CONTACTS"])
           .then(() => filterByName());
     };
@@ -107,17 +108,13 @@ $filters-height: 48px;
 
 .contacts-list {
   width: 30%;
-  padding: 16px;
-  margin-top: $filters-height;
-  height: calc(100vh - #{$filters-height});
-  overflow: scroll;
-  position: relative;
+
 
   &__filters-wrapper {
     position: fixed;
     top: 0;
     left: 0;
-    width: calc(30% + 32px);
+    width: 30%;
     height: $filters-height;
     background-color: #373737;
     display: flex;
@@ -126,6 +123,14 @@ $filters-height: 48px;
 
   &__filter-input {
     margin: 0 0 0 16px;
+  }
+
+  &__contacts-wrapper {
+    padding: 16px;
+    margin-top: $filters-height;
+    height: calc(100vh - 80px);
+    overflow-y: auto;
+    position: relative;
   }
 }
 </style>

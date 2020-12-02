@@ -25,6 +25,7 @@ export default {
 <style scoped lang="scss">
 .contacts-page {
   width: 100%;
+  height: 100vh;
   display: flex;
   flex-direction: row;
 }

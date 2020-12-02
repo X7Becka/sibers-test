@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { computed } from "vue";
+import { ref } from "vue";
 export default {
   name: "CustomInput",
   props: {
@@ -42,13 +42,13 @@ export default {
       required: true
     },
     keyup: {
-      type: () => {},
+      type: Function,
       default: () => null,
       required: false
     }
   },
   setup(props) {
-    const inputValue = computed(() => props.value); //avoid unwanted mutations
+    const inputValue = ref(props.value) //avoid unwanted mutations
     return { inputValue };
   }
 };

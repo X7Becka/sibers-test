@@ -33,8 +33,7 @@ export default {
       default: () => {},
       required: true
     }
-  },
-  setup(props) {}
+  }
 };
 </script>
 
@@ -42,6 +41,7 @@ export default {
 .contact {
   height: 80px;
   border-radius: 32px;
+
   &__layout {
     display: flex;
     overflow: hidden;
@@ -68,7 +68,6 @@ export default {
     width: 64px;
     height: 64px;
     object-fit: cover;
-    border-radius: 100%;
     display: flex;
   }
 
