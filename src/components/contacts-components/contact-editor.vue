@@ -47,7 +47,7 @@ export default {
       state.editableContact = payload;
       state.newData = _handleDataForPatch(payload)
     };
-    
+
     const _handleDataForPatch = (contact) => {
       const {id, lastEdit, ...dataForPatch} = contact
       const reformatObj = {}
@@ -80,5 +80,6 @@ export default {
 <style scoped lang="scss">
 .contact-editor {
   width: 70%;
+  padding: 48px 0;
 }
 </style>
