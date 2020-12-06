@@ -1,5 +1,3 @@
-# sibers
-
 ## Project setup
 ```
 npm install

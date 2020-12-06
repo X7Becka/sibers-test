@@ -1,10 +1,10 @@
 {
-  "name": "sibers",
+  "name": "x7becka",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "vue-cli-service build --modern",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
@@ -14,7 +14,7 @@
     "velocity-animate": "^2.0.6",
     "vue": "^3.0.4",
     "vue-logger-plugin": "^2.0.0",
-    "vue-router": "^4.0.0-rc.5",
+    "vue-router": "^4.0.0-rc.6",
     "vue-slider-component": "^4.0.0-beta.3",
     "vuejs-logger": "1.5.5",
     "vuex": "^4.0.0-rc.2"
@@ -29,7 +29,6 @@
     "@vue/eslint-config-prettier": "^6.0.0",
     "babel-eslint": "^10.1.0",
     "babel-plugin-transform-regenerator": "^6.26.0",
-    "babel-polyfill": "^6.26.0",
     "eslint": "^6.7.2",
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-vue": "^7.0.1",
@@ -56,9 +55,8 @@
   "browserslist": [
     "> 1%",
     "last 2 versions",
-    "not dead",
-    "ie 11"
+    "not dead"
   ],
-  "_id": "sibers@0.1.0",
+  "_id": "x7becka@0.1.0",
   "readme": "ERROR: No README data found!"
 }
