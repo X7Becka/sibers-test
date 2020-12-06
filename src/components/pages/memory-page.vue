@@ -1,6 +1,7 @@
 <template>
   <div class="memory-page">
-    <div v-if="!state.isReady" class="memory-page__slider-wrapper">
+    <MemoryScoreboard :data="state.scores" />
+    <div v-if="!gameState.isReady" class="memory-page__slider-wrapper">
       <div class="memory-page__slider-title">Difficulty</div>
       <CustomSlider
           v-model="state.cells"
@@ -11,9 +12,8 @@
           :max="100"
       />
     </div>
-
-    <div v-if="!state.isEnd" :style="{width: fieldDimension() + 'px', height: fieldDimension() + 'px'}" class="memory-page__cards-wrapper">
-      <div class="memory-page__stopwatch-ingame">{{ stopwatch }}</div>
+    <div v-if="!gameState.isEnd" :style="{width: recalculateFieldDimension() + 'px', height: recalculateFieldDimension() + 'px'}" class="memory-page__cards-wrapper">
+      <div class="memory-page__stopwatch-ingame">{{ renderStopwatch }}</div>
       <transition-group
           v-bind:css="false"
           v-on:before-enter="transition.beforeEnter"
@@ -26,23 +26,24 @@
             :data-index="index"
             :key="realIndex"
             v-for="(index, realIndex) in state.shuffledCells"
-            :is-revealed="state.pending[realIndex] === index || state.isSteady"
+            :is-revealed="state.pending[realIndex] === index || gameState.isSteady"
             :is-unlocked="state.revealed[realIndex] === index"
+            :images-counter="loadingImagesCounter"
         />
       </transition-group>
       <div class="memory-page__btn-group">
-        <button @click="testing">qweqwe</button>
-        <button @click="ready">rdy</button>
-        <button @click="endgame">end</button>
+        <button @click="ready">ready</button>
       </div>
     </div>
-    <div v-if="state.isEnd" class="memory-page__enter-nickname-wrapper">
+    <div v-if="gameState.isEnd" class="memory-page__enter-nickname-wrapper">
       <CustomInput
           class-name="memory-page__endgame-input"
           :value="state.nickName"
+          v-model="state.nickName"
           placeholder="Nickname"
       />
-      <div class="memory-page__score">Your score is: {{stopwatch}}!</div>
+      <div class="memory-page__score">Your score is: {{ renderStopwatch }}!</div>
+      <button @click.once="submitScores">submit</button>
     </div>
   </div>
 </template>
@@ -53,25 +54,33 @@ import CustomSlider from "@/components/input-components/custom-slider";
 import "velocity-animate/velocity.ui.min.js";
 import { computed, onMounted, reactive, watch } from "vue";
 import CustomInput from "@/components/input-components/custom-input";
+import { useStore } from "vuex";
+import MemoryScoreboard from "@/components/memory-components/memory-scoreboard";
 
 export default {
   name: "MemoryPage",
-  components: { CustomInput, CustomSlider, MemoryCard },
+  components: { MemoryScoreboard, CustomInput, CustomSlider, MemoryCard },
   setup() {
+    const store = useStore();
     const state = reactive({
-      isReady: false,
-      isSteady: false,
-      isPlay: false,
-      isEnd: false,
       cells: 36,
+      loadedImages: 0,
       shuffledCells: [],
       revealed: {},
       pending: {},
-      stopwatch: 0,
       stopwatchInstance: null,
       cardTimerFirst: null,
       cardTimerSecond: null,
-      nickName: null
+      stopwatch: 0,
+      nickName: null,
+      scores: store.state["MEMORY/scores"]
+    });
+
+    const gameState = reactive({
+      isReady: false,
+      isSteady: false,
+      isPlay: false,
+      isEnd: false
     });
 
     onMounted(() => {
@@ -84,31 +93,37 @@ export default {
     );
 
     watch(
-        () => state.isPlay,
-        () => state.isPlay && !state.isEnd ? _stopwatches.start() : _stopwatches.stop()
+        () => gameState.isPlay,
+        () => gameState.isPlay && !gameState.isEnd ? _stopwatches.start() : _stopwatches.stop()
     );
+
+    watch(() => state.loadedImages,
+        () => {
+          if (state.loadedImages === state.cells) {
+            setTimeout(() => {
+              gameState.isSteady = false;
+              gameState.isPlay = true;
+            }, 5000);
+          }
+        });
 
     const _stopwatches = {
       start: () => state.stopwatchInstance = setInterval(() => state.stopwatch += 1000, 1000),
       stop: () => clearInterval(state.stopwatchInstance)
-    }
+    };
 
     const transition = {
-      beforeEnter: (el) => {el.style.opacity = 0;el.style.height = 0},
+      beforeEnter: (el) => {
+        el.style.opacity = 0;
+        el.style.height = 0;
+      },
       enter: (el, done) => setTimeout(() => Velocity(el, { opacity: 1, height: "48px" }, { complete: done }), Number(el.dataset.index)),
       leave: (el, done) => setTimeout(() => Velocity(el, { opacity: 0, height: 0 }, { complete: done }), Number(el.dataset.index))
     };
 
-    const ready = () => {
-      state.isReady = true;
-      state.isSteady = true;
-      setTimeout(() => {
-        state.isSteady = false;
-        state.isPlay = true;
-      }, 5000);
-    };
+    const loadingImagesCounter = () => state.loadedImages++;
 
-    const fieldDimension = () => Math.sqrt(state.cells) * 48 + Math.sqrt(state.cells) * 4;
+    const recalculateFieldDimension = () => Math.sqrt(state.cells) * 48 + Math.sqrt(state.cells) * 4;
 
     /**
      * @param index {number} pair index
@@ -119,29 +134,37 @@ export default {
       _handlePendingCards(index, realIndex);
     };
 
+    const submitScores = () => {
+      store.dispatch("MEMORY/SUBMIT_SCORES", { nickname: state.nickName, score: state.stopwatch })
+      .then(() => _fetchScores())
+    };
 
-    const stopwatch = computed( () => {
+    const renderStopwatch = computed(() => {
       const date = new Date(null);
       date.setSeconds(state.stopwatch / 1000);
       const utc = date.toUTCString();
       return utc.substr(utc.indexOf(":") - 2, 8);
-    })
+    });
 
-
-    const _init = () => _makeShuffledField();
+    const _init = () => {
+      _makeShuffledField();
+      _fetchScores();
+    };
 
     const _handleCellsCountChanging = () => {
       _makeShuffledField();
-      fieldDimension();
+      recalculateFieldDimension();
     };
 
     const _makeShuffledField = () => {
-      Promise.resolve(_setFieldLayout())
-          .then(arr => {
-            //assigning value to shuffledField in the same block because arr.sort doesn't have a callback but it's synchronous
-            arr.sort(() => Math.random() - 0.5);
-            state.shuffledCells = arr;
-          });
+      const fieldArray = _setFieldLayout()
+      fieldArray.sort(() => Math.random() - 0.5);
+      state.shuffledCells = fieldArray;
+    };
+
+    const _fetchScores = () => {
+      store.dispatch("MEMORY/FETCH_SCORES")
+          .then(() => state.scores = store.getters["MEMORY/GET_SCORES"]);
     };
 
     const _setFieldLayout = () => {
@@ -170,7 +193,7 @@ export default {
       if (hasPair) {
         state.revealed = { ...state.pending, ...state.revealed };
         state.pending = {};
-        if (Object.keys(state.revealed).length === state.shuffledCells.length) endgame()
+        if (Object.keys(state.revealed).length === state.shuffledCells.length) _end();
         //or aren't...
       } else if (Object.keys(state.pending).length >= 2) {
         state.cardTimerSecond = setTimeout(() => state.pending = {}, 700);
@@ -181,32 +204,30 @@ export default {
       return (
           state.revealed[realIndex] === index ||
           state.pending[realIndex] === index ||
-          state.isSteady ||
-          !state.isReady
+          gameState.isSteady ||
+          !gameState.isReady
       );
     };
 
-    const endgame = () => {
-      state.isEnd = true;
-      state.isPlay = false;
-    }
+    const ready = () => {
+      gameState.isReady = true;
+      gameState.isSteady = true;
+    };
 
-    const testing = () => {
-      console.log(state.revealed, "state.revealed");
-      console.log(state.pending, "state.pending");
-      console.log(state.cells, "state.cells");
-      console.log(state.shuffledCells, "state.shuffledCells");
-      console.log(state, 'state')
+    const _end = () => {
+      gameState.isEnd = true;
+      gameState.isPlay = false;
     };
 
     return {
-      endgame,
-      fieldDimension,
+      gameState,
       handleCard,
+      loadingImagesCounter,
       ready,
+      recalculateFieldDimension,
+      renderStopwatch,
       state,
-      stopwatch,
-      testing,
+      submitScores,
       transition,
     };
   }

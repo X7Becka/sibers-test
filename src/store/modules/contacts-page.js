@@ -19,7 +19,6 @@ const getters = {
 
 const actions = {
   LOAD_CONTACTS: ({commit, dispatch}) => {
-console.log('ListeningStateChangedEvent')
     return new Promise(resolve => {
       PROGRESSBAR.loading(dispatch)
       axios.get(api)
