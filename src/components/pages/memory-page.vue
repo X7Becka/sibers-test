@@ -32,7 +32,7 @@
         />
       </transition-group>
       <div class="memory-page__btn-group">
-        <button @click="ready">ready</button>
+        <button @click.once="ready">ready</button>
       </div>
     </div>
     <div v-if="gameState.isEnd" class="memory-page__enter-nickname-wrapper">
