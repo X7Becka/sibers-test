@@ -1,6 +1,6 @@
 <template>
   <div :data-index="dataIndex" class="memory-card">
-    <div class="memory-card__wrapper" :class="cardCondition()">
+    <div :class="cardCondition()" class="memory-card__wrapper">
       <img
           @load.once="handleLoadingState.done()"
           :src="getImage()"
@@ -11,14 +11,14 @@
           class="memory-card__flop"
       />
       <div class="memory-card__progress-wrapper">
-        <div class="memory-card__progress" :class="{'memory-card__progress--loading': state.isLoading, 'memory-card__progress--done': !state.isLoading}" />
+        <div :class="{'memory-card__progress--loading': state.isLoading, 'memory-card__progress--done': !state.isLoading}" class="memory-card__progress" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import Flop from "../../../src/assets/image/memory/flop.png";
+import Flop from "../../../assets/image/memory/flop.png";
 import { reactive } from "vue";
 
 export default {

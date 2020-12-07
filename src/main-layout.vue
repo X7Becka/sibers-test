@@ -7,11 +7,9 @@
 </template>
 
 <script>
-import ContactsPage from "@/components/pages/contacts-page";
 import "./scss/index.scss";
-import Progressbar from "@/components/data-display-components/progressbar";
-import MemoryPage from "@/components/pages/memory-page";
-import RouterLinks from "@/components/data-display-components/router-links";
+import Progressbar from "@/components/data-display/progressbar";
+import RouterLinks from "@/components/data-display/router-links";
 
 export default {
   name: "MainLayout",

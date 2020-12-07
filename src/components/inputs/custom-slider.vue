@@ -1,6 +1,5 @@
 <template>
 <VueSlider
-    class="custom-slider"
     :class="className"
     :adsorb="adsorb"
     :interval="interval"
@@ -9,6 +8,7 @@
     :included="true"
     :min="min"
     :max="max"
+    class="custom-slider"
 />
 </template>
 
@@ -48,12 +48,6 @@ export default {
       default: 100
     }
 
-  },
-  setup(props) {
-    const state = {
-      value: 0
-    }
-  return {state}
   }
 };
 </script>

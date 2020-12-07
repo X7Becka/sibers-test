@@ -17,7 +17,7 @@
 <script>
 import { useStore } from "vuex";
 import { onMounted, reactive } from "vue";
-import CustomInput from "@/components/input-components/custom-input";
+import CustomInput from "@/components/inputs/custom-input";
 
 export default {
   name: "ContactEditor",

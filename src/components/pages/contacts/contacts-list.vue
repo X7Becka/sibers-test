@@ -9,7 +9,6 @@
           :value="state.inputName"
           class-name="contacts-list__filter-input"
       />
-      <button @click="testing">WQWEQWE</button>
     </div>
     <transition-group
         tag="div"
@@ -34,8 +33,8 @@
 <script>
 import { onMounted, reactive } from "vue";
 import "velocity-animate/velocity.ui.min.js";                       //using velocityJS animations to get stable tick by frame. Library uses requestAnimationFrame() native js method
-import Contact from "@/components/contacts-components/contact";
-import CustomInput from "@/components/input-components/custom-input";
+import Contact from "@/components/pages/contacts/contact";
+import CustomInput from "@/components/inputs/custom-input";
 import { useStore } from "vuex";
 
 export default {
@@ -48,7 +47,7 @@ export default {
       required: true
     }
   },
-  setup(props) {
+  setup() {
     const store = useStore();
     const state = reactive({
       contacts: [],
@@ -68,10 +67,6 @@ export default {
       store.dispatch("CONTACTS/LOAD_CONTACTS")
           .then(() => state.contacts = store.getters["CONTACTS/GET_CONTACTS"])
           .then(() => filterByName());
-    };
-
-    const testing = () => {
-      console.log(state, "state");
     };
 
     const filterByName = () => {

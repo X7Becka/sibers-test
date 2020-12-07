@@ -6,8 +6,8 @@
 </template>
 
 <script>
-import ContactsList from "@/components/contacts-components/contacts-list";
-import ContactEditor from "@/components/contacts-components/contact-editor";
+import ContactsList from "@/components/pages/contacts/contacts-list";
+import ContactEditor from "@/components/pages/contacts/contact-editor";
 
 export default {
   name: "ContactsPage",

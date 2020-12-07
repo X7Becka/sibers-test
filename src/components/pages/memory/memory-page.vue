@@ -3,29 +3,35 @@
     <MemoryScoreboard :data="state.scores" />
     <div v-if="!gameState.isReady" class="memory-page__slider-wrapper">
       <div class="memory-page__slider-title">Difficulty</div>
+
+      <!--Range slider-->
       <CustomSlider
           v-model="state.cells"
-          class-name="memory-page__slider"
           :adsorb="true"
           :marks="[36, 64, 100]"
           :min="36"
           :max="100"
+          class-name="memory-page__slider"
       />
     </div>
-    <div v-if="!gameState.isEnd" :style="{width: recalculateFieldDimension() + 'px', height: recalculateFieldDimension() + 'px'}" class="memory-page__cards-wrapper">
+    <div
+        v-if="!gameState.isEnd"
+        :style="{width: recalculateFieldDimension() + 'px', height: recalculateFieldDimension() + 'px'}"
+        class="memory-page__cards-wrapper"
+    >
       <div class="memory-page__stopwatch-ingame">{{ renderStopwatch }}</div>
       <transition-group
-          v-bind:css="false"
+          :css="false"
           v-on:before-enter="transition.beforeEnter"
           v-on:enter="transition.enter"
           v-on:leave="transition.leave"
       >
         <MemoryCard
+            v-for="(index, realIndex) in state.shuffledCells"
             @click="handleCard(index, realIndex)"
             class="memory-page__card"
             :data-index="index"
             :key="realIndex"
-            v-for="(index, realIndex) in state.shuffledCells"
             :is-revealed="state.pending[realIndex] === index || gameState.isSteady"
             :is-unlocked="state.revealed[realIndex] === index"
             :images-counter="loadingImagesCounter"
@@ -37,9 +43,9 @@
     </div>
     <div v-if="gameState.isEnd" class="memory-page__enter-nickname-wrapper">
       <CustomInput
-          class-name="memory-page__endgame-input"
-          :value="state.nickName"
           v-model="state.nickName"
+          :value="state.nickName"
+          class-name="memory-page__endgame-input"
           placeholder="Nickname"
       />
       <div class="memory-page__score">Your score is: {{ renderStopwatch }}!</div>
@@ -49,13 +55,13 @@
 </template>
 
 <script>
-import MemoryCard from "@/components/memory-components/memory-card";
-import CustomSlider from "@/components/input-components/custom-slider";
+import MemoryCard from "@/components/pages/memory/memory-card";
+import CustomSlider from "@/components/inputs/custom-slider";
 import "velocity-animate/velocity.ui.min.js";
 import { computed, onMounted, reactive, watch } from "vue";
-import CustomInput from "@/components/input-components/custom-input";
+import CustomInput from "@/components/inputs/custom-input";
 import { useStore } from "vuex";
-import MemoryScoreboard from "@/components/memory-components/memory-scoreboard";
+import MemoryScoreboard from "@/components/pages/memory/memory-scoreboard";
 
 export default {
   name: "MemoryPage",
@@ -136,7 +142,7 @@ export default {
 
     const submitScores = () => {
       store.dispatch("MEMORY/SUBMIT_SCORES", { nickname: state.nickName, score: state.stopwatch })
-      .then(() => _fetchScores())
+          .then(() => _fetchScores());
     };
 
     const renderStopwatch = computed(() => {
@@ -157,7 +163,7 @@ export default {
     };
 
     const _makeShuffledField = () => {
-      const fieldArray = _setFieldLayout()
+      const fieldArray = _setFieldLayout();
       fieldArray.sort(() => Math.random() - 0.5);
       state.shuffledCells = fieldArray;
     };
@@ -228,7 +234,7 @@ export default {
       renderStopwatch,
       state,
       submitScores,
-      transition,
+      transition
     };
   }
 };
