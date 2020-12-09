@@ -1,5 +1,5 @@
 <template>
-<VueSlider
+  <VueSlider
     :class="className"
     :adsorb="adsorb"
     :interval="interval"
@@ -9,23 +9,23 @@
     :min="min"
     :max="max"
     class="custom-slider"
-/>
+  />
 </template>
 
 <script>
-import VueSlider from "vue-slider-component"
+import VueSlider from 'vue-slider-component'
 export default {
-  name: "CustomSlider",
+  name: 'CustomSlider',
   components: {VueSlider},
   props: {
     className: {
       type: String,
-      default: "",
+      default: '',
       required: true
     },
     adsorb: {
       type: Boolean,
-      default: false,
+      default: false
     },
     interval: {
       type: Number,
@@ -47,9 +47,8 @@ export default {
       type: Number,
       default: 100
     }
-
   }
-};
+}
 </script>
 
 <style lang="scss">
@@ -120,7 +119,7 @@ export default {
   }
 
   .vue-slider-dot-handle::after {
-    content: "";
+    content: '';
     position: absolute;
     left: 50%;
     top: 50%;
@@ -170,7 +169,8 @@ export default {
     border-radius: 50% 50% 50% 0;
     background-color: var(--main-text);
     opacity: 0;
-    transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.2s linear;
+    transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1),
+      opacity 0.2s linear;
   }
 
   .vue-slider-dot-tooltip-inner-top {

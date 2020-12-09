@@ -1,14 +1,21 @@
 <template>
-<div class="router-links">
-  <div class="router-links__wrapper">
-  <RouterLink class="router-links__link" :key="i" v-for="(value, key, i) in pages" :to="value">{{key}}</RouterLink>
+  <div class="router-links">
+    <div class="router-links__wrapper">
+      <RouterLink
+        v-for="(value, key, i) in pages"
+        :key="i"
+        class="router-links__link"
+        :to="value"
+      >
+        {{ key }}
+      </RouterLink>
+    </div>
   </div>
-</div>
 </template>
 
 <script>
 export default {
-  name: "router-links",
+  name: 'RouterLinks',
   setup() {
     const pages = {
       Memory: '/memory',
@@ -16,7 +23,7 @@ export default {
     }
     return {pages}
   }
-};
+}
 </script>
 
 <style scoped lang="scss">
@@ -43,7 +50,7 @@ export default {
     box-shadow: 0 0 4px 0 var(--main-text);
     display: flex;
     align-items: center;
-    @include transition(transform)
+    @include transition(transform);
   }
 
   &__link {
@@ -54,7 +61,7 @@ export default {
     text-decoration: none;
 
     &.router-link-active {
-      color: #FFF;
+      color: #fff;
       text-decoration: underline;
     }
   }

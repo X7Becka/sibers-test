@@ -19,13 +19,12 @@
 </template>
 
 <script>
-import { computed } from "vue";
 export default {
-  name: "contact",
+  name: 'Contact',
   props: {
     className: {
       type: String,
-      default: "",
+      default: '',
       required: true
     },
     contact: {
@@ -34,7 +33,7 @@ export default {
       required: true
     }
   }
-};
+}
 </script>
 
 <style scoped lang="scss">

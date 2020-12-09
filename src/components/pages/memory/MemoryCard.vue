@@ -2,27 +2,30 @@
   <div :data-index="dataIndex" class="memory-card">
     <div :class="cardCondition()" class="memory-card__wrapper">
       <img
-          @load.once="handleLoadingState.done()"
-          :src="getImage()"
-          class="memory-card__face"
+        :src="getImage()"
+        class="memory-card__face"
+        @load.once="handleLoadingState.done()"
       />
-      <img
-          :src="Flop"
-          class="memory-card__flop"
-      />
+      <img :src="Flop" class="memory-card__flop" />
       <div class="memory-card__progress-wrapper">
-        <div :class="{'memory-card__progress--loading': state.isLoading, 'memory-card__progress--done': !state.isLoading}" class="memory-card__progress" />
+        <div
+          :class="{
+            'memory-card__progress--loading': state.isLoading,
+            'memory-card__progress--done': !state.isLoading
+          }"
+          class="memory-card__progress"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import Flop from "../../../assets/image/memory/flop.png";
-import { reactive } from "vue";
+import Flop from '@/assets/image/memory/flop.png'
+import {reactive} from 'vue'
 
 export default {
-  name: "memory-card",
+  name: 'MemoryCard',
   props: {
     dataIndex: Number,
     isRevealed: Boolean,
@@ -32,29 +35,29 @@ export default {
   setup(props) {
     const state = reactive({
       isLoading: null
-    });
+    })
 
     const getImage = () => {
       if (props.isRevealed) {
-        if (state.isLoading === null) handleLoadingState.loading();
+        if (state.isLoading === null) handleLoadingState.loading()
 
         /** @const props.dataIndex {number} **/
-        return `https://i.pravatar.cc/64?img=${props.dataIndex}/`;
+        return `https://i.pravatar.cc/64?img=${props.dataIndex}/`
       }
-    };
+    }
 
     const handleLoadingState = {
-      loading: () => state.isLoading = true,
+      loading: () => (state.isLoading = true),
       done: () => {
-        state.isLoading = false;
-        props.imagesCounter();
+        state.isLoading = false
+        props.imagesCounter()
       }
-    };
+    }
 
     const cardCondition = () => {
-      if (props.isRevealed) return "memory-card__wrapper--revealed";
-      if (props.isUnlocked) return "memory-card__wrapper--unlocked";
-    };
+      if (props.isRevealed) return 'memory-card__wrapper--revealed'
+      if (props.isUnlocked) return 'memory-card__wrapper--unlocked'
+    }
 
     return {
       getImage,
@@ -62,9 +65,9 @@ export default {
       cardCondition,
       state,
       handleLoadingState
-    };
+    }
   }
-};
+}
 </script>
 
 <style scoped lang="scss">

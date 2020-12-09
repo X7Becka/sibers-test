@@ -1,10 +1,10 @@
-import { createRouter, createWebHistory } from "vue-router";
+import {createRouter, createWebHistory} from 'vue-router'
 
 const routes = [
   {
-    path: "/contacts",
-    name: "Contacts",
-    component: () => import("../components/pages/contacts/contacts-page")
+    path: '/contacts',
+    name: 'Contacts',
+    component: () => import('@/components/pages/contacts/ContactsPage')
   },
   {
     /**
@@ -23,15 +23,15 @@ const routes = [
      Реализовать сборку проекта
      Создать таблицу результатов
      */
-   path: "/memory",
-   name: "Memory",
-   component: () => import("../components/pages/memory/memory-page")
+    path: '/memory',
+    name: 'Memory',
+    component: () => import('@/components/pages/memory/MemoryPage')
   }
-];
+]
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
-});
+})
 
-export default router;
+export default router

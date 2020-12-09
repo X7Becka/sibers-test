@@ -1,7 +1,7 @@
-import Vuex, { createLogger } from "vuex";
-import CONTACTS from "./modules/contacts-page";
-import MEMORY from "./modules/memory-page";
-import PROGRESSBAR from "./modules/progressbar";
+import Vuex, {createLogger} from 'vuex'
+import CONTACTS from '@/store/modules/contacts-page'
+import MEMORY from '@/store/modules/memory-page'
+import PROGRESSBAR from '@/store/modules/progressbar'
 
 const debug = process.env.NODE_ENV !== 'production'
 
@@ -17,4 +17,4 @@ export default new Vuex.Store({
     MEMORY
   },
   plugins: debug ? [createLogger(loggerOptions)] : []
-});
+})

@@ -1,29 +1,29 @@
 <template>
   <input
+    v-model="inputValue"
     class="custom-input"
     :class="className"
-    v-on:keyup="keyup"
     :type="type"
     :placeholder="placeholder"
-    v-model="inputValue"
     :alt="alt"
     :value="value"
+    @keyup="keyup"
   />
 </template>
 
 <script>
-import { ref } from "vue";
+import {ref} from 'vue'
 export default {
-  name: "CustomInput",
+  name: 'CustomInput',
   props: {
     className: {
       type: String,
-      default: "",
+      default: '',
       required: true
     },
     type: {
       type: String,
-      default: "text",
+      default: 'text',
       required: false
     },
     placeholder: {
@@ -38,7 +38,7 @@ export default {
     },
     alt: {
       type: [String, Number],
-      default: "input",
+      default: 'input',
       required: true
     },
     keyup: {
@@ -49,9 +49,9 @@ export default {
   },
   setup(props) {
     const inputValue = ref(props.value) //avoid unwanted mutations
-    return { inputValue };
+    return {inputValue}
   }
-};
+}
 </script>
 
 <style scoped lang="scss">

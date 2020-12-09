@@ -1,20 +1,20 @@
 <template>
   <div class="main-layout">
     <Progressbar />
-<RouterLinks/>
-    <RouterView/>
+    <RouterLinks />
+    <RouterView />
   </div>
 </template>
 
 <script>
-import "./scss/index.scss";
-import Progressbar from "@/components/data-display/progressbar";
-import RouterLinks from "@/components/data-display/router-links";
+import '@/scss/index.scss'
+import Progressbar from '@/components/data-display/Progressbar'
+import RouterLinks from '@/components/data-display/RouterLinks'
 
 export default {
-  name: "MainLayout",
-  components: { RouterLinks, Progressbar }
-};
+  name: 'MainLayout',
+  components: {RouterLinks, Progressbar}
+}
 </script>
 
 <style scoped lang="scss">

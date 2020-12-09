@@ -1,25 +1,25 @@
 <template>
   <div class="contacts-page">
     <ContactsList :="{...mapStateToProps}" />
-    <ContactEditor/>
+    <ContactEditor />
   </div>
 </template>
 
 <script>
-import ContactsList from "@/components/pages/contacts/contacts-list";
-import ContactEditor from "@/components/pages/contacts/contact-editor";
+import ContactsList from '@/components/pages/contacts/ContactsList'
+import ContactEditor from '@/components/pages/contacts/ContactEditor'
 
 export default {
-  name: "ContactsPage",
-  components: { ContactEditor, ContactsList },
+  name: 'ContactsPage',
+  components: {ContactEditor, ContactsList},
   setup() {
     const mapStateToProps = {
-      className: "contacts-page__contacts-block",
+      className: 'contacts-page__contacts-block'
     }
 
-    return { mapStateToProps };
+    return {mapStateToProps}
   }
-};
+}
 </script>
 
 <style scoped lang="scss">
