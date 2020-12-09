@@ -5,7 +5,7 @@
         v-for="(value, key, i) in pages"
         :key="i"
         class="router-links__link"
-        :to="value"
+        :to="{name: value}"
       >
         {{ key }}
       </RouterLink>
@@ -18,8 +18,8 @@ export default {
   name: 'RouterLinks',
   setup() {
     const pages = {
-      Memory: '/memory',
-      Contacts: '/contacts'
+      Memory: 'Memory',
+      Contacts: 'Contacts'
     }
     return {pages}
   }
