@@ -19,7 +19,7 @@ export default {
   setup() {
     const pages = {
       Memory: 'Memory',
-      Contacts: 'Contacts'
+      Contacts: 'Contacts',
     }
     return {pages}
   }

@@ -1,8 +1,13 @@
 <template>
   <div class="memory-page">
     <MemoryScoreboard :data="state.scores" />
-    <div v-if="!gameState.isReady" class="memory-page__slider-wrapper">
-      <div class="memory-page__slider-title">Difficulty</div>
+    <div
+      v-if="!gameState.isReady"
+      class="memory-page__slider-wrapper"
+    >
+      <div class="memory-page__slider-title">
+        Difficulty
+      </div>
 
       <!--Range slider-->
       <CustomSlider
@@ -14,39 +19,57 @@
         class-name="memory-page__slider"
       />
     </div>
+
+<!--    field wrapper that dimension bases on cards amount-->
     <div
       v-if="!gameState.isEnd"
       :style="{
-        width: recalculateFieldDimension + 'px',
-        height: recalculateFieldDimension + 'px'
+        width: state.fieldDimension + 'px',
+        height: state.fieldDimension + 'px',
       }"
       class="memory-page__cards-wrapper"
     >
-      <div class="memory-page__stopwatch-ingame">{{ renderStopwatch }}</div>
+      <!--        stopwatch render component-->
+      <MemoryStopwatch
+        :key="1"
+        ref="stopwatch"
+        class-name="memory-page__stopwatch-ingame"
+        :value="state.stopwatchValue"
+      />
       <transition-group
         :css="false"
         @before-enter="transition.beforeEnter"
         @enter="transition.enter"
         @leave="transition.leave"
       >
+        <!--        playing card item render component-->
         <MemoryCard
           v-for="(index, realIndex) in state.shuffledCells"
           :key="realIndex"
           class="memory-page__card"
           :data-index="index"
-          :is-revealed="
-            state.pending[realIndex] === index || gameState.isSteady
-          "
+          :is-revealed="state.pending[realIndex] === index || gameState.isSteady"
           :is-unlocked="state.revealed[realIndex] === index"
           :images-counter="loadingImagesCounter"
           @click="handleCard(index, realIndex)"
         />
       </transition-group>
       <div class="memory-page__btn-group">
-        <button @click.once="ready">ready</button>
+        <button
+          v-if="!gameState.isReady"
+          @click="ready"
+        >
+          ready
+        </button>
+        <!--        <button @click="getState">-->
+        <!--          state-->
+        <!--        </button>-->
       </div>
     </div>
-    <div v-if="gameState.isEnd" class="memory-page__enter-nickname-wrapper">
+    <div
+      v-if="gameState.isEnd"
+      class="memory-page__enter-nickname-wrapper"
+    >
       <CustomInput
         v-model="state.nickName"
         :value="state.nickName"
@@ -54,25 +77,39 @@
         placeholder="Nickname"
       />
       <div class="memory-page__score">
-        Your score is: {{ renderStopwatch }}!
+        Your score is:
+
+        <!--        stopwatch render component-->
+        <MemoryStopwatch
+          :key="1"
+          ref="stopwatch"
+          :value="state.stopwatchValue"
+        />
+        !
       </div>
-      <button @click.once="submitScores">submit</button>
+      <button
+        v-if="!gameState.isSubmitted"
+        @click="submitScores"
+      >
+        submit
+      </button>
     </div>
   </div>
 </template>
 
 <script>
-import MemoryCard from '@/components/pages/memory/MemoryCard'
-import CustomSlider from '@/components/inputs/CustomSlider'
-import 'velocity-animate/velocity.ui.min.js'
-import {computed, onMounted, reactive, watch} from 'vue'
-import CustomInput from '@/components/inputs/CustomInput'
-import {useStore} from 'vuex'
-import MemoryScoreboard from '@/components/pages/memory/MemoryScoreboard'
+import MemoryCard from "@/components/pages/memory/MemoryCard"
+import CustomSlider from "@/components/inputs/CustomSlider"
+import "velocity-animate/velocity.ui.min.js"
+import {onMounted, reactive, watch} from "vue"
+import CustomInput from "@/components/inputs/CustomInput"
+import {useStore} from "vuex"
+import MemoryScoreboard from "@/components/pages/memory/MemoryScoreboard"
+import MemoryStopwatch from "@/components/pages/memory/MemoryStopwatch"
 
 export default {
-  name: 'MemoryPage',
-  components: {MemoryScoreboard, CustomInput, CustomSlider, MemoryCard},
+  name: "MemoryPage",
+  components: {MemoryStopwatch, MemoryScoreboard, CustomInput, CustomSlider, MemoryCard},
   setup() {
     const store = useStore()
     const state = reactive({
@@ -81,19 +118,21 @@ export default {
       shuffledCells: [],
       revealed: {},
       pending: {},
-      stopwatchInstance: null,
+      fieldDimension: 0,
       cardTimerFirst: null,
       cardTimerSecond: null,
-      stopwatch: 0,
+      stopwatch: undefined,
+      stopwatchValue: 0,
       nickName: null,
-      scores: store.state['MEMORY/scores']
+      scores: store.state["MEMORY/scores"]
     })
 
     const gameState = reactive({
       isReady: false,
       isSteady: false,
       isPlay: false,
-      isEnd: false
+      isEnd: false,
+      isSubmitted: false
     })
 
     onMounted(() => {
@@ -109,8 +148,8 @@ export default {
       () => gameState.isPlay,
       () =>
         gameState.isPlay && !gameState.isEnd
-          ? _stopwatches.start()
-          : _stopwatches.stop()
+          ? _stopwatchMethods.start()
+          : _stopwatchMethods.stop()
     )
 
     watch(
@@ -125,23 +164,21 @@ export default {
       }
     )
 
-    const _stopwatches = {
-      start: () =>
-        (state.stopwatchInstance = setInterval(
-          () => (state.stopwatch += 1000),
-          1000
-        )),
-      stop: () => clearInterval(state.stopwatchInstance)
+    const _stopwatchMethods = {
+      start: () => state.stopwatch = setInterval(
+        () => state.stopwatchValue += 1000, 1000
+      ),
+      stop: () => clearInterval(state.stopwatch)
     }
 
     const transition = {
-      beforeEnter: el => {
+      beforeEnter: (el) => {
         el.style.opacity = 0
         el.style.height = 0
       },
       enter: (el, done) =>
         setTimeout(
-          () => Velocity(el, {opacity: 1, height: '48px'}, {complete: done}),
+          () => Velocity(el, {opacity: 1, height: "48px"}, {complete: done}),
           Number(el.dataset.index)
         ),
       leave: (el, done) =>
@@ -155,9 +192,9 @@ export default {
       state.loadedImages++
     }
 
-    const recalculateFieldDimension = computed(
-      () => Math.sqrt(state.cells) * 48 + Math.sqrt(state.cells) * 4
-    )
+    const recalculateFieldDimension = () => {
+      state.fieldDimension = Math.sqrt(state.cells) * 48 + Math.sqrt(state.cells) * 4
+    }
 
     /**
      * @param index {number} pair index
@@ -169,29 +206,24 @@ export default {
     }
 
     const submitScores = () => {
-      store
-        .dispatch('MEMORY/SUBMIT_SCORES', {
-          nickname: state.nickName,
-          score: state.stopwatch
-        })
+      store.dispatch("MEMORY/SUBMIT_SCORES", {
+        nickname: state.nickName,
+        score: state.stopwatchValue
+      })
+        .then(() => gameState.isSubmitted = true)
         .then(() => _fetchScores())
+        .catch(() => console.log("Something went wrong while we tried to submit your scores!"))
     }
-
-    const renderStopwatch = computed(() => {
-      const date = new Date(null)
-      date.setSeconds(state.stopwatch / 1000)
-      const utc = date.toUTCString()
-      return utc.substr(utc.indexOf(':') - 2, 8)
-    })
 
     const _init = () => {
       _makeShuffledField()
+      recalculateFieldDimension()
       _fetchScores()
     }
 
     const _handleCellsCountChanging = () => {
       _makeShuffledField()
-      recalculateFieldDimension
+      recalculateFieldDimension()
     }
 
     const _makeShuffledField = () => {
@@ -201,9 +233,8 @@ export default {
     }
 
     const _fetchScores = () => {
-      store
-        .dispatch('MEMORY/FETCH_SCORES')
-        .then(() => (state.scores = store.getters['MEMORY/GET_SCORES']))
+      store.dispatch("MEMORY/FETCH_SCORES")
+        .then(() => (state.scores = store.getters["MEMORY/GET_SCORES"]))
     }
 
     const _setFieldLayout = () => {
@@ -229,17 +260,16 @@ export default {
         () => delete state.pending[realIndex],
         5000
       )
-      const hasPair =
-        Object.keys(state.pending).every(
-          card => state.pending[card] === index
-        ) && Object.keys(state.pending).length >= 2
+      const hasPair = Object.keys(state.pending).every(card =>
+        state.pending[card] === index
+      ) && Object.keys(state.pending).length >= 2
 
       //two revealed cards are the similar
       if (hasPair) {
         state.revealed = {...state.pending, ...state.revealed}
         state.pending = {}
-        if (Object.keys(state.revealed).length === state.shuffledCells.length)
-          _end()
+        if (Object.keys(state.revealed).length === state.shuffledCells.length) _end()
+
         //or aren't...
       } else if (Object.keys(state.pending).length >= 2)
         state.cardTimerSecond = setTimeout(() => (state.pending = {}), 700)
@@ -265,15 +295,14 @@ export default {
     }
 
     return {
+      state,
       gameState,
+      transition,
       handleCard,
       loadingImagesCounter,
       ready,
       recalculateFieldDimension,
-      renderStopwatch,
-      state,
       submitScores,
-      transition
     }
   }
 }
@@ -319,7 +348,8 @@ export default {
     text-align: center;
     font-size: 18px;
     line-height: 100%;
-    margin: 8px 0;
+    margin: 8px 4px 8px 0;
+    display: flex;
   }
 }
 </style>

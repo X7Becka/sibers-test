@@ -17,9 +17,10 @@ export default {
     })
 
     const _init = () => {
-      store.subscribe(mutation => {
-        if (mutation.type === 'PROGRESSBAR/SET_PROGRESS_STATUS')
+      store.subscribe((mutation) => {
+        if (mutation.type === 'PROGRESSBAR/SET_PROGRESS_STATUS') {
           state.value = mutation.payload
+        }
       })
     }
     return {state}
